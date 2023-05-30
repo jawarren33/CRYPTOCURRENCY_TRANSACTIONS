@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[276]:
-
-
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend 
 from ecdsa import SECP256k1, SigningKey
@@ -11,10 +8,6 @@ from ecdsa.util import sigdecode_der, sigencode_der
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import load_der_private_key, load_der_public_key, Encoding, PublicFormat
 from cryptography.hazmat.primitives.asymmetric import utils
-
-
-# In[277]:
-
 
 class user:
     balance = 0
@@ -27,10 +20,6 @@ class user:
         pem = self.public_key.public_bytes(encoding = serialization.Encoding.PEM,
                                            format = serialization.PublicFormat.SubjectPublicKeyInfo)
         return pem.decode()
-
-
-# In[333]:
-
 
 #Define sender 
 #establish sender_private_key
@@ -51,8 +40,6 @@ sender_hash = digest_sha1_s.finalize()
 #deserialize the sender public key
 deserialized_sender_pubkey = load_der_public_key(sender_public_key_der)
 
-
-
 #Define Recipient
 recipient_private_key = ec.generate_private_key(ec.SECP256K1(), default_backend())
 recipient_public_key = recipient_private_key.public_key()
@@ -60,7 +47,6 @@ recipient_public_key = recipient_private_key.public_key()
 #DER encoded public key
 recipient_public_key_der = recipient_public_key.public_bytes(encoding=Encoding.DER, format=PublicFormat.SubjectPublicKeyInfo)
     
-
 #create hash of recipient public key (recipient_hash)
 digest_sha1_r = hashes.Hash(hashes.SHA1(), default_backend())
 recipient_public_key_b = recipient_public_key_der
@@ -69,10 +55,6 @@ recipient_hash = digest_sha1_r.finalize()
 
 #deserialize the recipient public key
 deserialized_recipient_pubkey = load_der_public_key(recipient_public_key_der)
-
-
-# In[344]:
-
 
 class Transaction:
     def __init__(self,sender_hash, recipient_hash, sender_public_key, amount,fee, nonce, signature, txid):
@@ -120,13 +102,6 @@ class Transaction:
 
         #assert self.sender_public_key.verify(signature, self.recipient_hash, ec.ECDSA(utils.Prehashed(hashes.SHA256()))), f"signature ({self.signature}) not a valid signature"
 
-        
-    
-
-
-# In[345]:
-
-
 
 def create_signed_transaction(sender_private_key,recipient_hash,amount,fee,nonce):
 
@@ -154,13 +129,6 @@ def create_signed_transaction(sender_private_key,recipient_hash,amount,fee,nonce
                         txid = txid)
     return (t, txid, signature)
     
-    
-    
-
-    
-
-
-# In[374]:
 
 
 #TEST CASE 1
@@ -174,10 +142,6 @@ try:
     t.verify(sender_balance = sender_balance, sender_private_key= sender_private_key, sender_previous_nonce = sender_previous_nonce)
 except AssertionError as exc:
     print("Verification failed with assertion error: ",exc)
-
-
-# In[397]:
-
 
 #TEST CASE 2
 amount = 100
@@ -200,9 +164,6 @@ t,txid,signature = create_signed_transaction(sender_private_key = test_privateke
                                                 nonce = nonce)
 
 print(t,txid,signature)
-
-
-# In[398]:
 
 
 #TEST CASE 3
@@ -232,9 +193,6 @@ t,txid,signature = create_signed_transaction(sender_private_key = test_privateke
 print(t,txid,signature)
 
 
-# In[399]:
-
-
 #TEST CASE 4.1
 amount = 900 
 fee = 55
@@ -260,9 +218,6 @@ t,txid,signature = create_signed_transaction(sender_private_key = test_privateke
                                                 nonce = nonce)
 
 print(t,txid,signature)
-
-
-# In[400]:
 
 
 #TEST CASE 4.2
@@ -292,9 +247,6 @@ t,txid,signature = create_signed_transaction(sender_private_key = test_privateke
 print(t,txid,signature)
 
 
-# In[407]:
-
-
 #TEST CASE 5
 amount = 900 
 fee = 55
@@ -319,9 +271,6 @@ except AssertionError as exc:
     
 
 print(t,txid,signature)
-
-
-# In[412]:
 
 
 #TEST CASE 6
@@ -358,10 +307,6 @@ t,txid,signature = create_signed_transaction(sender_private_key = test_privateke
                                                 nonce = nonce)
 
 print(t,txid,signature)
-
-
-# In[ ]:
-
 
 
 
